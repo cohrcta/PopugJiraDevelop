@@ -1,16 +1,15 @@
 package com.popug.stoyalova.controller;
 
-import com.popug.stoyalova.SecurityUser;
+import com.popug.stoyalova.exception.ValidateException;
 import com.popug.stoyalova.model.user.UserData;
 import com.popug.stoyalova.model.user.UserDto;
 import com.popug.stoyalova.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -32,5 +31,21 @@ public class UserController {
                 .role(entity.getRole().name())
                 .userName(entity.getUsername())
                 .build();
+    }
+
+    @PostMapping("/create")
+    public Map<String, Object> save(@RequestBody UserDto userDto) throws ValidateException {
+        Long savedId = userService.save(userDto);
+        return Map.of("id", savedId);
+    }
+
+    @PutMapping("/{id}")
+    public void update(@PathVariable Long id,@RequestBody UserDto userDto) throws ValidateException {
+        userService.update(id, userDto);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id){
+
     }
 }
