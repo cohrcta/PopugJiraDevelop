@@ -1,0 +1,38 @@
+server:
+  port: 8082
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5434/postgres
+    username: postgres
+    password: accountuser1
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    show-sql: true
+
+  liquibase:
+    change-log: classpath:/changelog/changelog-master.yaml
+
+  security:
+    oauth2:
+      client:
+        registration:
+          account-client-oidc:
+            provider: spring
+            client-id: account-client
+            client-secret: secret
+            authorization-grant-type: authorization_code
+            redirect-uri: "http://127.0.0.1:8082/login/oauth2/code/{registrationId}"
+            scope: openid
+            client-name: account-client-oidc
+          account-client-authorization-code:
+            provider: spring
+            client-id: account-client
+            client-secret: secret
+            authorization-grant-type: authorization_code
+            redirect-uri: "http://127.0.0.1:8082/authorized"
+            scope: account.read
+            client-name: account-client-authorization-code
+        provider:
+          spring:
+            issuer-uri: http://auth-server:8081
