@@ -1,0 +1,46 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5435/postgres
+    username: postgres
+    password: taskuser1
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    show-sql: true
+
+  liquibase:
+    change-log: classpath:/changelog/changelog-master.yaml
+
+  kafka:
+    consumer:
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      bootstrap-servers: localhost:29092
+      group-id: user
+
+  security:
+    oauth2:
+      client:
+        registration:
+          task-client-oidc:
+            provider: spring
+            client-id: task-client
+            client-secret: secret
+            authorization-grant-type: authorization_code
+            redirect-uri: "http://127.0.0.1:8080/login/oauth2/code/{registrationId}"
+            scope: openid
+            client-name: task-client-oidc
+          task-client-authorization-code:
+            provider: spring
+            client-id: task-client
+            client-secret: secret
+            authorization-grant-type: authorization_code
+            redirect-uri: "http://127.0.0.1:8080/authorized"
+            scope: task.read
+            client-name: task-client-authorization-code
+        provider:
+          spring:
+            issuer-uri: http://auth-server:8081
