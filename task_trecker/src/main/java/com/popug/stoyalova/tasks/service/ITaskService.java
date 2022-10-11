@@ -1,14 +1,17 @@
 package com.popug.stoyalova.tasks.service;
 
+import com.popug.stoyalova.tasks.dto.TaskDto;
 import com.popug.stoyalova.tasks.model.Task;
 import com.popug.stoyalova.tasks.model.User;
 
+import java.util.List;
+
 public interface ITaskService {
-    Task save(Task task);
+    void reassign();
 
-    Task update(Task task);
+    String save(TaskDto taskDto);
 
-    Iterable<Task> findAllByStatus(String status);
+    void update(TaskDto taskDto);
 
-    Iterable<Task> findAllByUser(User user);
+    List<Task> findAllByUserPublicId(String userPublicID);
 }

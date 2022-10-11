@@ -1,4 +1,4 @@
-package com.popug.stoyalova.model.user;
+package com.popug.stoyalova.dto;
 
 import javax.validation.constraints.NotNull;
 import lombok.Builder;
@@ -16,6 +16,7 @@ public class UserDto {
     private String password;
     private String name;
     private String role;
+    private String publicId;
     @NotNull(message = "email is required field")
     private String email;
     private Timestamp dateCreate;

@@ -2,7 +2,7 @@ package com.popug.stoyalova.service;
 
 import com.popug.stoyalova.exception.ValidateException;
 import com.popug.stoyalova.model.user.UserData;
-import com.popug.stoyalova.model.user.UserDto;
+import com.popug.stoyalova.dto.UserDto;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,9 +15,7 @@ public interface IUserService {
 
     Long save(UserDto user) throws ValidateException;
 
-    UserData update(Long id, UserDto user) throws ValidateException;
-
-    List<UserData> findAllByRole(String role);
+    void update(Long id, UserDto user) throws ValidateException;
 
     List<UserData> findAll();
 
