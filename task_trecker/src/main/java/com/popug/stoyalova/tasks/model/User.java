@@ -1,10 +1,7 @@
 package com.popug.stoyalova.tasks.model;
 
 import com.sun.istack.NotNull;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
@@ -13,6 +10,7 @@ import java.util.Date;
 
 @Entity
 @Data
+@Builder
 @Table(name = "user_data")
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)

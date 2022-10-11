@@ -1,3 +1,5 @@
 databaseChangeLog :
   - include :
       file : changelog/initialization/schema.xml
+  - include:
+      file: changelog/initialization/users.xml

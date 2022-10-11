@@ -1,0 +1,16 @@
+<?xml version="1.0"  encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+
+    <property name="now" value="now()" dbms="postgresql"/>
+
+    <changeSet id="8"  author="root">
+        <insert tableName="user_data">
+            <column name="username" value="admin" />
+            <column name="public_id" value="8216afd2-fa3f-46ad-8370-cb8938872d60" />
+            <column name="role" value="ADMIN" />
+        </insert>
+    </changeSet>
+</databaseChangeLog>

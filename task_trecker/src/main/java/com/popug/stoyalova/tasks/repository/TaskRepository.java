@@ -14,5 +14,6 @@ public interface TaskRepository extends PagingAndSortingRepository<Task, Long> {
 
     Optional<Task> findByPublicId(String publicId);
 
-    List<Task> findAllByUser(User user);
+    List<Task> findAllByUserAssign(User user);
+    List<Task> findAllByCloseDateIsNull();
 }

@@ -45,6 +45,6 @@ public class SecurityUser implements UserDetails {
     }
 
     public static UserDetails fromUserData(UserData userData){
-        return new User(userData.getUsername(), userData.getPassword(), userData.getRole().grantedAuthorities());
+        return new User(userData.getPublicId(), userData.getPassword(), userData.getRole().grantedAuthorities());
     }
 }

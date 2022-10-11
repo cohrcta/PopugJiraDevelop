@@ -29,7 +29,11 @@
             <column name="id"  type="NUMBER" defaultValueSequenceNext="task_id_seq">
                 <constraints primaryKey="true"  nullable="false"/>
             </column>
-            <column name="description" type="varchar(32)">
+            <column name="description" type="varchar(132)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="title" type="varchar(32)">
                 <constraints nullable="false"/>
             </column>
 
@@ -37,9 +41,19 @@
                 <constraints nullable="false" unique="true"/>
             </column>
 
+            <column name="time_create"  type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="time_close"  type="timestamp"/>
+
             <column name="status" type="varchar(64)" defaultValue="OPEN"/>
 
-            <column name="user_id" type="varchar(64)">
+            <column name="user_create_id" type="varchar(64)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+
+            <column name="user_assign_id" type="varchar(64)">
                 <constraints nullable="false" unique="true"/>
             </column>
 

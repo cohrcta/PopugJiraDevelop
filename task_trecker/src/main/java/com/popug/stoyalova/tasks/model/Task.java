@@ -1,10 +1,7 @@
 package com.popug.stoyalova.tasks.model;
 
 import com.sun.istack.NotNull;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -12,6 +9,7 @@ import java.util.Date;
 
 @Entity
 @Data
+@Builder
 @Table(name = "task_data")
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -34,13 +32,21 @@ public class Task {
     private String publicId;
 
     private String description;
+    private String title;
 
     @NotNull
     @ManyToOne
     @JoinColumn(
-            name = "user_id",
+            name = "user_create_id",
             referencedColumnName = "public_id")
-    private User user;
+    private User userCreate;
+
+    @NotNull
+    @ManyToOne
+    @JoinColumn(
+            name = "user_assign_id",
+            referencedColumnName = "public_id")
+    private User userAssign;
 
     @Enumerated(value = EnumType.STRING)
     @NotNull
