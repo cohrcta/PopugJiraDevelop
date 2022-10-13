@@ -1,12 +1,10 @@
 package com.popug.stoyalova.tasks.model;
 
-import com.sun.istack.NotNull;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @Entity
 @Data
@@ -33,11 +31,9 @@ public class User {
     @Column(name = "public_id", unique = true)
     private String publicId;
 
-    @NotNull
     @Column(unique = true)
     private String username;
 
-    @NotNull
     private String role;
 
 }

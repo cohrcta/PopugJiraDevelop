@@ -20,6 +20,11 @@ spring:
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       bootstrap-servers: localhost:29092
       group-id: user
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      bootstrap-servers:  localhost:29092
+    bootstrap-servers:  localhost:29092
 
   security:
     oauth2:
@@ -33,14 +38,6 @@ spring:
             redirect-uri: "http://127.0.0.1:8080/login/oauth2/code/{registrationId}"
             scope: openid
             client-name: task-client-oidc
-          task-client-authorization-code:
-            provider: spring
-            client-id: task-client
-            client-secret: secret
-            authorization-grant-type: authorization_code
-            redirect-uri: "http://127.0.0.1:8080/authorized"
-            scope: task.read
-            client-name: task-client-authorization-code
         provider:
           spring:
             issuer-uri: http://auth-server:8081

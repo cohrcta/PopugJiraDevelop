@@ -9,11 +9,56 @@
     <changeSet id="8"  author="root">
         <insert tableName="user_data">
             <column name="username" value="admin" />
-            <column name="encrypted_password" value="$2a$12$UvWPxgqQoz0upsSk2ZUJZua3l9kVcJ0XFvN3hSwty/WRcdtDvZkUm"/>
+            <column name="encrypted_password" value="$2a$12$Pvlnm9HDxPmzrQDTpzykfebVsTwioHqJeQ2ens5iFeWVrW2uI5Kzi"/>
             <column name="public_id" value="8216afd2-fa3f-46ad-8370-cb8938872d60" />
             <column name="email" value="test@popug.com" />
             <column name="time_create" value="${now}" />
             <column name="role" value="ADMIN" />
+        </insert>
+
+        <insert tableName="user_data">
+            <column name="username" value="userPopug1" />
+            <column name="encrypted_password" value="$2a$12$Pvlnm9HDxPmzrQDTpzykfebVsTwioHqJeQ2ens5iFeWVrW2uI5Kzi"/>
+            <column name="public_id" value="7216afd2-fa3f-46ad-8370-cb8938872d60" />
+            <column name="email" value="testUser1@popug.com" />
+            <column name="time_create" value="${now}" />
+            <column name="role" value="USER" />
+        </insert>
+
+        <insert tableName="user_data">
+            <column name="username" value="userPopug2" />
+            <column name="encrypted_password" value="$2a$12$Pvlnm9HDxPmzrQDTpzykfebVsTwioHqJeQ2ens5iFeWVrW2uI5Kzi"/>
+            <column name="public_id" value="6216afd2-fa3f-46ad-8370-cb8938872d60" />
+            <column name="email" value="testUser2@popug.com" />
+            <column name="time_create" value="${now}" />
+            <column name="role" value="USER" />
+        </insert>
+
+        <insert tableName="user_data">
+            <column name="username" value="userPopug3" />
+            <column name="encrypted_password" value="$2a$12$Pvlnm9HDxPmzrQDTpzykfebVsTwioHqJeQ2ens5iFeWVrW2uI5Kzi"/>
+            <column name="public_id" value="5216afd2-fa3f-46ad-8370-cb8938872d60" />
+            <column name="email" value="testUser3@popug.com" />
+            <column name="time_create" value="${now}" />
+            <column name="role" value="USER" />
+        </insert>
+
+        <insert tableName="user_data">
+            <column name="username" value="adminTop" />
+            <column name="encrypted_password" value="$2a$12$Pvlnm9HDxPmzrQDTpzykfebVsTwioHqJeQ2ens5iFeWVrW2uI5Kzi"/>
+            <column name="public_id" value="4216afd2-fa3f-46ad-8370-cb8938872d60" />
+            <column name="email" value="god@popug.com" />
+            <column name="time_create" value="${now}" />
+            <column name="role" value="ADMIN" />
+        </insert>
+
+        <insert tableName="user_data">
+            <column name="username" value="manager" />
+            <column name="encrypted_password" value="$2a$12$Pvlnm9HDxPmzrQDTpzykfebVsTwioHqJeQ2ens5iFeWVrW2uI5Kzi"/>
+            <column name="public_id" value="3216afd2-fa3f-46ad-8370-cb8938872d60" />
+            <column name="email" value="manager@popug.com" />
+            <column name="time_create" value="${now}" />
+            <column name="role" value="MANAGER" />
         </insert>
     </changeSet>
 </databaseChangeLog>

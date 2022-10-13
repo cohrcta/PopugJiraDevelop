@@ -1,6 +1,5 @@
 package com.popug.stoyalova.tasks.model;
 
-import com.sun.istack.NotNull;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -34,22 +33,19 @@ public class Task {
     private String description;
     private String title;
 
-    @NotNull
     @ManyToOne
     @JoinColumn(
             name = "user_create_id",
-            referencedColumnName = "public_id")
+            referencedColumnName = "id")
     private User userCreate;
 
-    @NotNull
     @ManyToOne
     @JoinColumn(
             name = "user_assign_id",
-            referencedColumnName = "public_id")
+            referencedColumnName = "id")
     private User userAssign;
 
     @Enumerated(value = EnumType.STRING)
-    @NotNull
     private Status status;
 
     @Column(name = "time_create")

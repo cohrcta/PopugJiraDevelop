@@ -33,6 +33,8 @@ import java.util.UUID;
 public class AuthorizationServerConfig {
 
 
+    public static final String SECRET = "secret";
+
     @Bean
     protected PasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder(12);
@@ -50,15 +52,13 @@ public class AuthorizationServerConfig {
     public RegisteredClientRepository registeredClientRepository() {
         RegisteredClient registeredClientTask = RegisteredClient.withId(UUID.randomUUID().toString())
                 .clientId("task-client")
-                .clientSecret(bCryptPasswordEncoder().encode("secret"))
+                .clientSecret(bCryptPasswordEncoder().encode(SECRET))
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .authorizationGrantType(AuthorizationGrantType.PASSWORD)
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
                 .redirectUri("http://127.0.0.1:8080/login/oauth2/code/task-client-oidc")
-                .redirectUri("http://127.0.0.1:8080/authorized")
                 .scope(OidcScopes.OPENID)
-                .scope("task.read")
                 .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
                 .build();
 
@@ -70,14 +70,24 @@ public class AuthorizationServerConfig {
                 .authorizationGrantType(AuthorizationGrantType.PASSWORD)
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
                 .redirectUri("http://127.0.0.1:8082/login/oauth2/code/account-client-oidc")
-                .redirectUri("http://127.0.0.1:8082/authorized")
                 .scope(OidcScopes.OPENID)
-                .scope("account.read")
+                .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
+                .build();
+
+        RegisteredClient registeredClientAuth = RegisteredClient.withId(UUID.randomUUID().toString())
+                .clientId("auth-client")
+                .clientSecret(bCryptPasswordEncoder().encode("secret"))
+                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                .authorizationGrantType(AuthorizationGrantType.PASSWORD)
+                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+                .redirectUri("http://127.0.0.1:8081/login/oauth2/code/auth-client-oidc")
+                .scope(OidcScopes.OPENID)
                 .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
                 .build();
 
 
-        return new InMemoryRegisteredClientRepository(registeredClientTask, registeredClientAccount);
+        return new InMemoryRegisteredClientRepository(registeredClientTask, registeredClientAccount, registeredClientAuth);
     }
 
     @Bean
