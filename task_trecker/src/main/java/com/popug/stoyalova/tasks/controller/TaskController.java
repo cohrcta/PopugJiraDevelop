@@ -57,7 +57,7 @@ public class TaskController {
         return Map.of("id", "ERROR");
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{taskPublicId}")
     public void close(@PathVariable String taskPublicId){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null) {

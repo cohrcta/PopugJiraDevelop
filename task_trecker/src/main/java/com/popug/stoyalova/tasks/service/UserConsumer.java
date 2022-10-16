@@ -20,7 +20,7 @@ public class UserConsumer {
 
     private final UserService userService;
 
-    @KafkaListener(topics = {"userCUD"})
+    @KafkaListener(topics = {"user.streaming"})
     public void consumeCud(final @Payload String message,
                         final @Header(KafkaHeaders.OFFSET) Integer offset,
                         final @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String key,
@@ -46,7 +46,7 @@ public class UserConsumer {
         }
     }
 
-    @KafkaListener(topics = {"userBE"})
+    @KafkaListener(topics = {"user.BE"})
     public void consumeBE(final @Payload String message,
                         final @Header(KafkaHeaders.OFFSET) Integer offset,
                         final @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,

@@ -34,7 +34,7 @@ public class UserController {
                 .build();
     }
 
-    @PostMapping("/create")
+    @PostMapping
     public Map<String, Object> save(@RequestBody UserDto userDto) throws ValidateException {
         Long savedId = userService.save(userDto);
         return Map.of("id", savedId);
@@ -45,8 +45,4 @@ public class UserController {
         userService.update(id, userDto);
     }
 
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id){
-
-    }
 }

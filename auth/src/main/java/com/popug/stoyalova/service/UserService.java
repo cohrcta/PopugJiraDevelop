@@ -30,7 +30,7 @@ import java.util.UUID;
 public class UserService implements UserDetailsService, IUserService {
 
     public static final String USER_DETAILS_SERVICE = "userDetailsServiceImpl";
-    public static final String USER_CUD = "userCUD";
+    public static final String USER_CUD = "user.streaming";
 
     private final UserRepository repository;
 
@@ -118,7 +118,7 @@ public class UserService implements UserDetailsService, IUserService {
                 .build());
 
         if(newRole){
-            sendMessageTask.send("userBE",  UserChangeRoleEvent.builder()
+            sendMessageTask.send("user.BE",  UserChangeRoleEvent.builder()
                     .eventTime(new Date())
                     .eventName("userRoleChanged")
                     .eventVersion(1)

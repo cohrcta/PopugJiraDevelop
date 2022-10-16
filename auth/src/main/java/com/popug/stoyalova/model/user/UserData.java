@@ -1,6 +1,5 @@
 package com.popug.stoyalova.model.user;
 
-import com.sun.istack.NotNull;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
@@ -37,16 +36,14 @@ public class UserData {
 
     private String name;
 
-    @NotNull
+    @N
     @Column(unique = true)
     private String username;
 
-    @NotNull
     @Column(name = "encrypted_password")
     private String password;
 
     @Enumerated(value = EnumType.STRING)
-    @NotNull
     private Role role;
 
     @Column(name = "time_create")

@@ -18,7 +18,6 @@ public class TaskCudEvent extends Event {
 
         private final String userCreatePublicId;
         private final String userAssignPublicId;
-        private final String status;
         private final String taskPublicId;
         private final String taskDescription;
         private final String taskTitle;

@@ -49,12 +49,12 @@
 
             <column name="status" type="varchar(64)" defaultValue="OPEN"/>
 
-            <column name="user_create_id" type="varchar(64)">
-                <constraints nullable="false" unique="true"/>
+            <column name="user_create_id" type="NUMBER">
+                <constraints nullable="false"/>
             </column>
 
-            <column name="user_assign_id" type="varchar(64)">
-                <constraints nullable="false" unique="true"/>
+            <column name="user_assign_id" type="NUMBER">
+                <constraints nullable="false"/>
             </column>
 
         </createTable>
