@@ -3,6 +3,7 @@ package com.popug.stoyalova.tasks.service;
 import com.popug.stoyalova.tasks.dto.TaskDto;
 import com.popug.stoyalova.tasks.events.TaskCloseEvent;
 import com.popug.stoyalova.tasks.events.TaskCudEvent;
+import com.popug.stoyalova.tasks.exception.NotYourTask;
 import com.popug.stoyalova.tasks.model.Status;
 import com.popug.stoyalova.tasks.model.Task;
 import com.popug.stoyalova.tasks.model.User;
@@ -16,6 +17,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class TaskService implements ITaskService{
 
+    public static final String TASK_BE = "task.BE";
     private final TaskRepository repository;
     private final UserService userService;
     private final SendMessageTask  sendMessageTask;
@@ -26,7 +28,7 @@ public class TaskService implements ITaskService{
         List<Task> tasks = repository.findAllByCloseDateIsNull();
         List<User> developers = userService.findAllByRole("USER");
         tasks.forEach(task ->{ assignForRandom(developers, task);
-            sendMessageTask.send(TASK_CUD, createMessage("updateTask")
+            sendMessageTask.send(TASK_BE, createMessage("updateTask")
                     .eventData(TaskCudEvent.TaskCudData.builder()
                             .userAssignPublicId(task.getUserAssign().getPublicId())
                             .taskPublicId(task.getPublicId())
@@ -92,14 +94,14 @@ public class TaskService implements ITaskService{
         Task task = repository.findByPublicId(taskDto.getPublicId())
                 .orElseThrow(() -> new RuntimeException("Task with id '" + taskDto.getPublicId() + "' not found"));
         if (!task.getUserAssign().getPublicId().equals(taskDto.getUserAssign())){
-            throw new RuntimeException("Task with id '" + taskDto.getPublicId() + "' not your." +
+            throw new NotYourTask("Task with id '" + taskDto.getPublicId() + "' not your." +
                     " Don't do work for "+ task.getUserAssign().getPublicId());
         }
         task.setCloseDate(new Date());
         task.setStatus(Status.CLOSE);
         repository.save(task);
 
-        sendMessageTask.send("task.BE",TaskCloseEvent.builder()
+        sendMessageTask.send(TASK_BE,TaskCloseEvent.builder()
                 .eventTime(new Date())
                 .eventName("closeTask")
                 .eventVersion(1)
