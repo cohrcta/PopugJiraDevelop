@@ -1,8 +1,6 @@
 package com.popug.stoyalova.service;
 
 import com.popug.stoyalova.SecurityUser;
-import com.popug.stoyalova.event.UserChangeRoleEvent;
-import com.popug.stoyalova.event.UserCudEvent;
 import com.popug.stoyalova.exception.ValidateException;
 import com.popug.stoyalova.model.user.Role;
 import com.popug.stoyalova.model.user.UserData;
@@ -30,13 +28,10 @@ import java.util.UUID;
 public class UserService implements UserDetailsService, IUserService {
 
     public static final String USER_DETAILS_SERVICE = "userDetailsServiceImpl";
-    public static final String USER_CUD = "user.streaming";
 
     private final UserRepository repository;
 
     private final PasswordEncoder passwordEncoder;
-
-    private final SendMessageTask  sendMessageTask;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -71,25 +66,7 @@ public class UserService implements UserDetailsService, IUserService {
                 .build();
         repository.save(user);
 
-        sendMessageTask.send(USER_CUD, createMessage("createUser")
-                .eventData(UserCudEvent.UserCudEventData.builder()
-                        .userPublicId(user.getPublicId())
-                        .email(user.getEmail())
-                        .name(user.getName())
-                        .userName(user.getUsername())
-                        .role(user.getRole().name())
-                        .build())
-                .build());
         return user.getId();
-    }
-
-    private UserCudEvent.UserCudEventBuilder<?, ?> createMessage(String eventName) {
-        return UserCudEvent.builder()
-                .eventTime(new Date())
-                .eventName(eventName)
-                .eventVersion(1)
-                .producer("authService")
-                .eventUID(UUID.randomUUID().toString());
     }
 
     @Override
@@ -100,36 +77,12 @@ public class UserService implements UserDetailsService, IUserService {
                          ValidateException.FieldValidationError.builder()
         .message("User with id '" + id + "' not found").build())));
         validateUserDto(userDto);
-        boolean newRole = userDto.getRole() != null && !(user.getRole().name().equals(userDto.getRole()));
         user.setUpdateDate(new Date());
         user.setEmail(userDto.getEmail());
         user.setRole(Role.valueOf(userDto.getRole()));
         user.setName(userDto.getName());
         user.setUsername(userDto.getUserName());
 
-        sendMessageTask.send(USER_CUD,  createMessage("updateUser")
-                .eventData(UserCudEvent.UserCudEventData.builder()
-                        .userPublicId(user.getPublicId())
-                        .email(user.getEmail())
-                        .name(user.getName())
-                        .userName(user.getUsername())
-                        .role(user.getRole().name())
-                        .build())
-                .build());
-
-        if(newRole){
-            sendMessageTask.send("user.BE",  UserChangeRoleEvent.builder()
-                    .eventTime(new Date())
-                    .eventName("userRoleChanged")
-                    .eventVersion(1)
-                    .producer("authService")
-                    .eventUID(UUID.randomUUID().toString())
-                    .eventData(UserChangeRoleEvent.UserChangeRoleData.builder()
-                            .userPublicId(user.getPublicId())
-                            .role(user.getRole().name())
-                            .build())
-                    .build());
-        }
         repository.save(user);
     }
 

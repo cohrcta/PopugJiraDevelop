@@ -1,8 +1,6 @@
 package com.popug.stoyalova.tasks.service;
 
 import com.popug.stoyalova.tasks.dto.TaskDto;
-import com.popug.stoyalova.tasks.events.TaskCloseEvent;
-import com.popug.stoyalova.tasks.events.TaskCudEvent;
 import com.popug.stoyalova.tasks.exception.NotYourTask;
 import com.popug.stoyalova.tasks.model.Status;
 import com.popug.stoyalova.tasks.model.Task;
@@ -17,23 +15,15 @@ import java.util.*;
 @RequiredArgsConstructor
 public class TaskService implements ITaskService{
 
-    public static final String TASK_BE = "task.BE";
     private final TaskRepository repository;
     private final UserService userService;
-    private final SendMessageTask  sendMessageTask;
-    public static final String TASK_CUD = "task.streaming";
 
     @Override
     public void reassign() {
         List<Task> tasks = repository.findAllByCloseDateIsNull();
         List<User> developers = userService.findAllByRole("USER");
         tasks.forEach(task ->{ assignForRandom(developers, task);
-            sendMessageTask.send(TASK_BE, createMessage("updateTask")
-                    .eventData(TaskCudEvent.TaskCudData.builder()
-                            .userAssignPublicId(task.getUserAssign().getPublicId())
-                            .taskPublicId(task.getPublicId())
-                            .build())
-                    .build());});
+           });
 
     }
 
@@ -43,14 +33,6 @@ public class TaskService implements ITaskService{
         repository.save(task);
     }
 
-    private TaskCudEvent.TaskCudEventBuilder<?, ?> createMessage(String eventName) {
-        return TaskCudEvent.builder()
-                .eventTime(new Date())
-                .eventName(eventName)
-                .eventVersion(1)
-                .producer("taskService")
-                .eventUID(UUID.randomUUID().toString());
-    }
 
 
     private void assignOnCreateRandom(List<User> developers, Task.TaskBuilder task){
@@ -76,16 +58,6 @@ public class TaskService implements ITaskService{
         Task task = taskBuilder.build();
         repository.save(task);
 
-        sendMessageTask.send(TASK_CUD, createMessage("createTask")
-                .eventData(TaskCudEvent.TaskCudData.builder()
-                        .taskCreteDate(task.getCreateDate())
-                        .taskPublicId(task.getPublicId())
-                        .taskDescription(task.getDescription())
-                        .taskTitle(task.getTitle())
-                        .userCreatePublicId(task.getUserCreate().getPublicId())
-                        .userAssignPublicId(task.getUserAssign().getPublicId())
-                        .build())
-                .build());
         return task.getPublicId();
     }
 
@@ -100,19 +72,6 @@ public class TaskService implements ITaskService{
         task.setCloseDate(new Date());
         task.setStatus(Status.CLOSE);
         repository.save(task);
-
-        sendMessageTask.send(TASK_BE,TaskCloseEvent.builder()
-                .eventTime(new Date())
-                .eventName("closeTask")
-                .eventVersion(1)
-                .producer("taskService")
-                .eventUID(UUID.randomUUID().toString())
-                .eventData(TaskCloseEvent.TaskCloseData.builder()
-                        .taskPublicId(task.getPublicId())
-                        .status(task.getStatus().name())
-                        .taskCloseDate(task.getCloseDate())
-                        .build())
-                .build());
 
 
     }
