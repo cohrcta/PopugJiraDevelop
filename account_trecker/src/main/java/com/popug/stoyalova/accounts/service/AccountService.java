@@ -1,6 +1,8 @@
 package com.popug.stoyalova.accounts.service;
 
+import com.popug.stoyalova.accounts.dto.AccountReportFilter;
 import com.popug.stoyalova.accounts.dto.AuditDto;
+import com.popug.stoyalova.accounts.dto.ReportSearchLastPeriod;
 import com.popug.stoyalova.accounts.model.Task;
 import com.popug.stoyalova.accounts.model.TaskAudit;
 import com.popug.stoyalova.accounts.model.User;
@@ -42,24 +44,53 @@ public class AccountService implements IAccountService {
     }
 
     @Override
-    public List<TaskAudit> findAllByUserPublicId(String userID) {
+    public List<TaskAudit> findAllByUserPublicId(String userID, AccountReportFilter filter) {
         Optional<User> userO = userService.findByPublicId(userID);
         if (userO.isEmpty()) {
             return List.of();
         }
         User user = userO.get();
         if ("USER".equals(user.getRole())) {
-            return repository.findAllByUser(user);
+            Date date = new Date();
+            if(ReportSearchLastPeriod.LAST_WEEK.equals(filter.getLastPeriod())) {
+                return repository.findAllByUserAndDateCreateInParentSystemIsBetweenAndForADay(user, atStartOfWeek(date),
+                        atEndOfDay(date), false);
+            }else if(ReportSearchLastPeriod.LAST_MONTH.equals(filter.getLastPeriod())) {
+                return repository.findAllByUserAndDateCreateInParentSystemIsBetweenAndForADay(user, atStartOfMonth(date),
+                        atEndOfDay(date), false);
+            }
+            return repository.findAllByUserAndDateCreateInParentSystemIsBetweenAndForADay(user,
+                    atStartOfDay(date), atEndOfDay(date), false);
         }
-        return findAllByDate(new Date());
+        return List.of();
     }
 
     @Override
-    public List<TaskAudit> findAllByDate(Date date) {
-        return repository.findAllByDateCreateInParentSystemIsBetween(atStartOfDay(date), atEndOfDay(date));
+    public List<TaskAudit> findAllByDate(AccountReportFilter filter) {
+        Date date = new Date();
+        if(ReportSearchLastPeriod.LAST_WEEK.equals(filter.getLastPeriod())) {
+            return repository.findAllByDateCreateInParentSystemIsBetweenAndForADay(atStartOfWeek(date),
+                    atEndOfDay(date), false);
+        }else if(ReportSearchLastPeriod.LAST_MONTH.equals(filter.getLastPeriod())) {
+            return repository.findAllByDateCreateInParentSystemIsBetweenAndForADay(atStartOfMonth(date),
+                    atEndOfDay(date), false);
+        }
+        return repository.findAllByDateCreateInParentSystemIsBetweenAndForADay(atStartOfDay(date), atEndOfDay(date), false);
     }
 
     private static Date atStartOfDay(Date date) {
+        LocalDateTime localDateTime = dateToLocalDateTime(date);
+        LocalDateTime startOfDay = localDateTime.minusDays(6).with(LocalTime.MIN);
+        return localDateTimeToDate(startOfDay);
+    }
+
+    private static Date atStartOfWeek(Date date) {
+        LocalDateTime localDateTime = dateToLocalDateTime(date);
+        LocalDateTime startOfDay = localDateTime.minusMonths(1).with(LocalTime.MIN);
+        return localDateTimeToDate(startOfDay);
+    }
+
+    private static Date atStartOfMonth(Date date) {
         LocalDateTime localDateTime = dateToLocalDateTime(date);
         LocalDateTime startOfDay = localDateTime.with(LocalTime.MIN);
         return localDateTimeToDate(startOfDay);

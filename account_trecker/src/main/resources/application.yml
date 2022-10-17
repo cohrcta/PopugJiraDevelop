@@ -13,6 +13,19 @@ spring:
   liquibase:
     change-log: classpath:/changelog/changelog-master.yaml
 
+  kafka:
+    consumer:
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      bootstrap-servers: localhost:29092
+      group-id: new-consumer-group-id
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      bootstrap-servers:  localhost:29092
+    bootstrap-servers:  localhost:29092
+
   security:
     oauth2:
       client:

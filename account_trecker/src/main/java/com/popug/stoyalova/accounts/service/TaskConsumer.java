@@ -35,13 +35,12 @@ public class TaskConsumer {
     @KafkaListener(topics = {"task.streaming"})
     public void consumeCud(final @Payload String message,
                         final @Header(KafkaHeaders.OFFSET) Integer offset,
-                        final @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String key,
                         final @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
                         final @Header(KafkaHeaders.RECEIVED_TIMESTAMP) long ts,
                         final Acknowledgment acknowledgment
     ) {
-        log.info(String.format("#### -> Consumed CUD task message -> TIMESTAMP: %d %s offset: %d key: %s " +
-                " topic: %s", ts, message, offset, key,  topic));
+        log.info(String.format("#### -> Consumed CUD task message -> TIMESTAMP: %d %s offset: %d " +
+                " topic: %s", ts, message, offset,  topic));
         acknowledgment.acknowledge();
         TaskCudEvent cudEvent = ObjectMapperUtils.toBean(message, TaskCudEvent.class);
 
@@ -101,7 +100,7 @@ public class TaskConsumer {
             Task task = getTask(taskChangeData, taskO);
             checkUser(taskChangeData.getUserPublicId(), userO);
 
-            if ("updateTask".equals(beEvent.getEventName())) { //назначили
+            if ("updateTask".equals(beEvent.getEventName())) {
 
                 auditDtoBuilder
                         .description("assign Task with ID " +taskChangeData.getTaskPublicId()+ " on user with ID " +
@@ -114,7 +113,7 @@ public class TaskConsumer {
                 userService.updateBalance(UserDto.builder().publicId(taskChangeData.getTaskPublicId())
                 .money(task.getAmount()).build());
 
-            } else if("closeTask".equals(beEvent.getEventName())){ // закрыл
+            } else if("closeTask".equals(beEvent.getEventName())){
 
                 auditDtoBuilder
                         .description("close Task with ID " +taskChangeData.getTaskPublicId()+ " by user with ID " +
@@ -128,18 +127,6 @@ public class TaskConsumer {
 
                 taskService.update(TaskDto.builder().status(Status.CLOSE)
                         .changeDate(taskChangeData.getTaskChangeDate()).build());
-
-            } else if("salary".equals(beEvent.getEventName())){ //выплата зарплаты
-            // TODO   добавить в другой консьюмер? update after salary module
-                auditDtoBuilder
-                        .description("salary for user with ID " +
-                                taskChangeData.getUserPublicId())
-                        .salary(true)
-                        .debit(0)
-                        .credit(0);
-
-                userService.updateBalance(UserDto.builder().publicId(taskChangeData.getTaskPublicId())
-                        .money(0).build());
 
             }
             accountService.save(auditDtoBuilder.build());
