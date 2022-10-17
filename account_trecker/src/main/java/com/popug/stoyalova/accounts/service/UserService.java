@@ -47,4 +47,10 @@ public class UserService implements IUserService{
         user.setBalance(user.getBalance()+userDto.getMoney());
         repository.save(user);
     }
+
+    @Override
+    public List<User> findAllByRole(String role) {
+        return repository.findAllByRole(role);
+    }
+
 }

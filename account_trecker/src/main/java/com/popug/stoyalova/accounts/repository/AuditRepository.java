@@ -9,8 +9,9 @@ import java.util.List;
 
 public interface AuditRepository extends PagingAndSortingRepository<TaskAudit, Long> {
 
-    List<TaskAudit> findAllByUserAndDateCreateInParentSystemIsBetween(User user, Date dateStart, Date dateEnd);
+    List<TaskAudit> findAllByUserAndDateCreateInParentSystemIsBetweenAndForADay(User user, Date dateStart,
+                                                                                     Date dateEnd, Boolean isSalary);
 
-    List<TaskAudit> findAllByDateCreateInParentSystemIsBetween(Date dateStart, Date dateEnd);
+    List<TaskAudit> findAllByDateCreateInParentSystemIsBetweenAndForADay(Date dateStart, Date dateEnd, Boolean isSalary);
 
 }

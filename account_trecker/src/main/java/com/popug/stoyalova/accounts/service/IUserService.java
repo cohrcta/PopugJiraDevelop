@@ -15,4 +15,7 @@ public interface IUserService {
     void update(UserDto user);
 
     void updateBalance(UserDto user);
+
+    List<User> findAllByRole(String role);
+
 }

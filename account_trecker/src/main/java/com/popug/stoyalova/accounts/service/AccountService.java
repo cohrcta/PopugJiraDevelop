@@ -53,14 +53,14 @@ public class AccountService implements IAccountService {
         if ("USER".equals(user.getRole())) {
             Date date = new Date();
             if(ReportSearchLastPeriod.LAST_WEEK.equals(filter.getLastPeriod())) {
-                return repository.findAllByUserAndDateCreateInParentSystemIsBetween(user, atStartOfWeek(date),
-                        atEndOfDay(date));
+                return repository.findAllByUserAndDateCreateInParentSystemIsBetweenAndForADay(user, atStartOfWeek(date),
+                        atEndOfDay(date), false);
             }else if(ReportSearchLastPeriod.LAST_MONTH.equals(filter.getLastPeriod())) {
-                return repository.findAllByUserAndDateCreateInParentSystemIsBetween(user, atStartOfMonth(date),
-                        atEndOfDay(date));
+                return repository.findAllByUserAndDateCreateInParentSystemIsBetweenAndForADay(user, atStartOfMonth(date),
+                        atEndOfDay(date), false);
             }
-            return repository.findAllByUserAndDateCreateInParentSystemIsBetween(user,
-                    atStartOfDay(date), atEndOfDay(date));
+            return repository.findAllByUserAndDateCreateInParentSystemIsBetweenAndForADay(user,
+                    atStartOfDay(date), atEndOfDay(date), false);
         }
         return List.of();
     }
@@ -69,11 +69,13 @@ public class AccountService implements IAccountService {
     public List<TaskAudit> findAllByDate(AccountReportFilter filter) {
         Date date = new Date();
         if(ReportSearchLastPeriod.LAST_WEEK.equals(filter.getLastPeriod())) {
-            return repository.findAllByDateCreateInParentSystemIsBetween(atStartOfWeek(date), atEndOfDay(date));
+            return repository.findAllByDateCreateInParentSystemIsBetweenAndForADay(atStartOfWeek(date),
+                    atEndOfDay(date), false);
         }else if(ReportSearchLastPeriod.LAST_MONTH.equals(filter.getLastPeriod())) {
-            return repository.findAllByDateCreateInParentSystemIsBetween(atStartOfMonth(date), atEndOfDay(date));
+            return repository.findAllByDateCreateInParentSystemIsBetweenAndForADay(atStartOfMonth(date),
+                    atEndOfDay(date), false);
         }
-        return repository.findAllByDateCreateInParentSystemIsBetween(atStartOfDay(date), atEndOfDay(date));
+        return repository.findAllByDateCreateInParentSystemIsBetweenAndForADay(atStartOfDay(date), atEndOfDay(date), false);
     }
 
     private static Date atStartOfDay(Date date) {
