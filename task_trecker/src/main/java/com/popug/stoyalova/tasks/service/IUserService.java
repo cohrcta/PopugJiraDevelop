@@ -12,7 +12,7 @@ public interface IUserService {
 
     List<User> findAllByRole(String role);
 
-    String save(UserDto user);
+    void save(UserDto user);
 
     void update(UserDto user);
 }

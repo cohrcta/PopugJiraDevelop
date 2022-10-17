@@ -1,7 +1,7 @@
 package com.popug.stoyalova.tasks.service;
 
 import com.popug.stoyalova.tasks.dto.TaskDto;
-import com.popug.stoyalova.tasks.events.TaskCloseEvent;
+import com.popug.stoyalova.tasks.events.TaskChangeEvent;
 import com.popug.stoyalova.tasks.events.TaskCudEvent;
 import com.popug.stoyalova.tasks.exception.NotYourTask;
 import com.popug.stoyalova.tasks.model.Status;
@@ -28,10 +28,12 @@ public class TaskService implements ITaskService{
         List<Task> tasks = repository.findAllByCloseDateIsNull();
         List<User> developers = userService.findAllByRole("USER");
         tasks.forEach(task ->{ assignForRandom(developers, task);
-            sendMessageTask.send(TASK_BE, createMessage("updateTask")
-                    .eventData(TaskCudEvent.TaskCudData.builder()
-                            .userAssignPublicId(task.getUserAssign().getPublicId())
+            sendMessageTask.send(TASK_BE, createBuilder("updateTask")
+                    .eventData(TaskChangeEvent.TaskChangeData.builder()
                             .taskPublicId(task.getPublicId())
+                            .userPublicId(task.getUserAssign().getPublicId())
+                            .status(task.getStatus().name())
+                            .taskChangeDate(new Date())
                             .build())
                     .build());});
 
@@ -43,10 +45,10 @@ public class TaskService implements ITaskService{
         repository.save(task);
     }
 
-    private TaskCudEvent.TaskCudEventBuilder<?, ?> createMessage(String eventName) {
+    private TaskCudEvent.TaskCudEventBuilder<?, ?> createMessage() {
         return TaskCudEvent.builder()
                 .eventTime(new Date())
-                .eventName(eventName)
+                .eventName("createTask")
                 .eventVersion(1)
                 .producer("taskService")
                 .eventUID(UUID.randomUUID().toString());
@@ -72,20 +74,31 @@ public class TaskService implements ITaskService{
                 .status(Status.OPEN)
                 .title(taskDto.getTitle())
                 .userCreate(userOptional.get());
-        assignOnCreateRandom(developers, taskBuilder);
         Task task = taskBuilder.build();
         repository.save(task);
 
-        sendMessageTask.send(TASK_CUD, createMessage("createTask")
+        sendMessageTask.send(TASK_CUD, createMessage()
                 .eventData(TaskCudEvent.TaskCudData.builder()
                         .taskCreteDate(task.getCreateDate())
                         .taskPublicId(task.getPublicId())
                         .taskDescription(task.getDescription())
                         .taskTitle(task.getTitle())
                         .userCreatePublicId(task.getUserCreate().getPublicId())
-                        .userAssignPublicId(task.getUserAssign().getPublicId())
                         .build())
                 .build());
+
+        assignOnCreateRandom(developers, taskBuilder);
+        task = taskBuilder.build();
+        repository.save(task);
+        sendMessageTask.send(TASK_BE, createBuilder("updateTask")
+                        .eventData(TaskChangeEvent.TaskChangeData.builder()
+                                .taskPublicId(task.getPublicId())
+                                .userPublicId(taskDto.getUserAssign())
+                                .status(task.getStatus().name())
+                                .taskChangeDate(task.getCreateDate())
+                                .build())
+                .build());
+
         return task.getPublicId();
     }
 
@@ -101,20 +114,25 @@ public class TaskService implements ITaskService{
         task.setStatus(Status.CLOSE);
         repository.save(task);
 
-        sendMessageTask.send(TASK_BE,TaskCloseEvent.builder()
-                .eventTime(new Date())
-                .eventName("closeTask")
-                .eventVersion(1)
-                .producer("taskService")
-                .eventUID(UUID.randomUUID().toString())
-                .eventData(TaskCloseEvent.TaskCloseData.builder()
+        sendMessageTask.send(TASK_BE, createBuilder("closeTask")
+                .eventData(TaskChangeEvent.TaskChangeData.builder()
                         .taskPublicId(task.getPublicId())
+                        .userPublicId(taskDto.getUserAssign())
                         .status(task.getStatus().name())
-                        .taskCloseDate(task.getCloseDate())
+                        .taskChangeDate(task.getCloseDate())
                         .build())
                 .build());
 
 
+    }
+
+    private TaskChangeEvent.TaskChangeEventBuilder<?, ?> createBuilder(String eventName) {
+        return TaskChangeEvent.builder()
+                .eventTime(new Date())
+                .eventName(eventName)
+                .eventVersion(1)
+                .producer("taskService")
+                .eventUID(UUID.randomUUID().toString());
     }
 
     @Override

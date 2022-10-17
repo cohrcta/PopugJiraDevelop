@@ -1,18 +1,17 @@
 package com.popug.stoyalova.accounts.model;
 
 import com.sun.istack.NotNull;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Data
+@Builder
 @Table(name = "user_data")
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -41,5 +40,10 @@ public class User {
 
     @NotNull
     private String role;
+
+    private Long balance;
+
+    @OneToMany(mappedBy = "user")
+    private List<TaskAudit> auditEvents;
 
 }

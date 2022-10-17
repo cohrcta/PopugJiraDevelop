@@ -8,17 +8,18 @@ import java.util.Date;
 
 @Getter
 @SuperBuilder
-public class TaskCloseEvent extends Event {
+public class TaskChangeEvent extends Event {
 
-    private final TaskCloseData eventData;
+    private final TaskChangeData eventData;
 
     @Builder
     @Getter
-    public static class TaskCloseData {
+    public static class TaskChangeData {
 
         private final String status;
         private final String taskPublicId;
-        private final Date taskCloseDate;
+        private final String userPublicId;
+        private final Date taskChangeDate;
     }
 
 }
