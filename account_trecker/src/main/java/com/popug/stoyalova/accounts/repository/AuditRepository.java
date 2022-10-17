@@ -6,13 +6,10 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 public interface AuditRepository extends PagingAndSortingRepository<TaskAudit, Long> {
 
-    Optional<TaskAudit> findByPublicId(String publicId);
-
-    List<TaskAudit> findAllByUser(User user);
+    List<TaskAudit> findAllByUserAndDateCreateInParentSystemIsBetween(User user, Date dateStart, Date dateEnd);
 
     List<TaskAudit> findAllByDateCreateInParentSystemIsBetween(Date dateStart, Date dateEnd);
 

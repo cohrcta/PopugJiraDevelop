@@ -135,11 +135,11 @@ public class TaskConsumer {
                         .description("salary for user with ID " +
                                 taskChangeData.getUserPublicId())
                         .salary(true)
-                        .debit(0)
+                        .debit(Math.max(0, task.getFee() + task.getAmount()))
                         .credit(0);
 
                 userService.updateBalance(UserDto.builder().publicId(taskChangeData.getTaskPublicId())
-                        .money(0).build());
+                        .money(Math.min(task.getFee() + task.getAmount(), 0)).build());
 
             }
             accountService.save(auditDtoBuilder.build());
