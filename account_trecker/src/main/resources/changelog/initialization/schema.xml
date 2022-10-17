@@ -15,7 +15,9 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column name="role" type="varchar(64)" defaultValue="USER"/>
+            <column name="role" type="varchar(64)"/>
+
+            <column name="balance" type="int8" defaultValue="0"/>
 
             <column name="public_id" type="varchar(64)">
                 <constraints nullable="false" unique="true"/>
@@ -39,8 +41,50 @@
 
             <column name="status" type="varchar(64)" defaultValue="OPEN"/>
 
-            <column name="user_id" type="varchar(64)">
+            <column name="fee" type="int" defaultValue="0"/>
+
+            <column name="amount" type="int" defaultValue="0"/>
+
+            <column name="time_create"  type="timestamp"/>
+
+            <column name="time_close"  type="timestamp"/>
+
+            <column name="user_create"  type="varchar(64)"/>
+
+        </createTable>
+
+        <createSequence sequenceName="task_audit_id_seq" startValue="1" incrementBy="1" />
+
+        <createTable tableName="task_audit_data">
+            <column name="id"  type="NUMBER" defaultValueSequenceNext="task_audit_id_seq">
+                <constraints primaryKey="true"  nullable="false"/>
+            </column>
+
+            <column name="description" type="varchar(32)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="public_id" type="varchar(64)">
                 <constraints nullable="false" unique="true"/>
+            </column>
+
+
+            <column name="date_create"  type="timestamp"/>
+
+            <column name="date_log"  type="timestamp"/>
+
+            <column name="credit" type="int" defaultValue="0"/>
+
+            <column name="debit" type="int" defaultValue="0"/>
+
+            <column name="salary" type="int" defaultValueNumeric="0"/>
+
+            <column name="log_task_id" type="NUMBER">
+                <constraints foreignKeyName="fk_log_task" referencedTableName="task_data" referencedColumnNames="id" deleteCascade="true"/>
+            </column>
+
+            <column name="log_user_id" type="NUMBER">
+                <constraints foreignKeyName="fk_log_user" referencedTableName="user_data" referencedColumnNames="id" deleteCascade="true"/>
             </column>
 
         </createTable>

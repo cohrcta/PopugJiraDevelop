@@ -6,10 +6,8 @@ import com.popug.stoyalova.tasks.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -28,14 +26,13 @@ public class UserService implements IUserService{
     }
 
     @Override
-    public String save(UserDto userDto) {
+    public void save(UserDto userDto) {
         User user  = User.builder()
                 .publicId(userDto.getPublicId())
                 .role(userDto.getRole())
                 .username(userDto.getUserName())
                 .build();
         repository.save(user);
-        return user.getPublicId();
     }
 
     @Override

@@ -16,7 +16,8 @@ public class HelloController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String role = null;
         if (authentication != null) {
-            role = authentication.getAuthorities().toString();
+            role =authentication.getAuthorities().stream().filter(i -> i.getAuthority().startsWith("ROLE_"))
+                    .findFirst().toString();
         }
         return "Hello " +principal.getName()+", Welcome to Tasks Code Buffer!!" +role;
     }

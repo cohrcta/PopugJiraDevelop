@@ -1,21 +1,21 @@
 package com.popug.stoyalova.accounts.model;
 
-import com.sun.istack.NotNull;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
 
 @Entity
 @Data
 @Builder
-@Table(name = "task_data")
+@Table(name = "task_audit_data")
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class Task {
-    private static final String SEQUENCE_NAME = "task_id_seq";
+
+public class TaskAudit {
+
+    private static final String SEQUENCE_NAME = "task_audit_id_seq";
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = SEQUENCE_NAME)
@@ -32,26 +32,26 @@ public class Task {
     @Column(name = "public_id", unique = true)
     private String publicId;
 
+    @ManyToOne
+    @JoinColumn(name = "log_task_id")
+    private Task task;
+
+    @ManyToOne
+    @JoinColumn(name = "log_user_id")
+    private User user;
+
+    @Column(name = "date_create")
+    private Date dateCreateInParentSystem;
+
+    private int credit;
+
+    private int debit;
+
     private String description;
 
-    @Enumerated(value = EnumType.STRING)
-    @NotNull
-    private Status status;
+    @Column(name = "salary")
+    private boolean forADay;
 
-    @Column(name = "time_create")
-    private Date createDate;
-
-    @Column(name = "time_close")
-    private Date closeDate;
-
-    @OneToMany(mappedBy = "task")
-    private List<TaskAudit> logEvents;
-
-    private int amount;
-
-    private int fee;
-
-    @Column(name = "user_create")
-    private String userCreatePublicId;
-
+    @Column(name = "date_log")
+    private Date dateLogIntoAccount;
 }
