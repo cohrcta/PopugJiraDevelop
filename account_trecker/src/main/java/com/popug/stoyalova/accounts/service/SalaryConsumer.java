@@ -1,13 +1,8 @@
 package com.popug.stoyalova.accounts.service;
 
 import com.popug.stoyalova.accounts.dto.AuditDto;
-import com.popug.stoyalova.accounts.dto.TaskDto;
 import com.popug.stoyalova.accounts.dto.UserDto;
 import com.popug.stoyalova.accounts.events.SalaryEvent;
-import com.popug.stoyalova.accounts.events.TaskChangeEvent;
-import com.popug.stoyalova.accounts.events.TaskCudEvent;
-import com.popug.stoyalova.accounts.model.Status;
-import com.popug.stoyalova.accounts.model.Task;
 import com.popug.stoyalova.accounts.model.User;
 import com.popug.stoyalova.accounts.support.ObjectMapperUtils;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.Optional;
-import java.util.Random;
 import java.util.UUID;
 
 @Service
@@ -36,12 +30,10 @@ public class SalaryConsumer {
     public void consumeBE(final @Payload String message,
                         final @Header(KafkaHeaders.OFFSET) Integer offset,
                         final @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
-                        final @Header(KafkaHeaders.RECEIVED_TIMESTAMP) long ts,
-                        final Acknowledgment acknowledgment
+                        final @Header(KafkaHeaders.RECEIVED_TIMESTAMP) long ts
     ) {
         log.info(String.format("#### -> Consumed BE salary message -> TIMESTAMP: %d %s offset: %d " +
                 "topic: %s", ts, message, offset,  topic));
-        acknowledgment.acknowledge();
 
         SalaryEvent beEvent = ObjectMapperUtils.toBean(message, SalaryEvent.class);
         if(beEvent != null) {

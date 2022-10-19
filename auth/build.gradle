@@ -16,6 +16,10 @@ configurations {
 
 repositories {
     mavenCentral()
+    maven {
+        url "https://packages.confluent.io/maven"
+    }
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
@@ -39,5 +43,7 @@ dependencies {
     implementation 'javax.validation:validation-api'
 
     implementation 'org.apache.commons:commons-lang3'
+
+    implementation 'io.confluent:kafka-json-schema-serializer:6.2.1'
 
 }

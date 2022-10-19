@@ -1,0 +1,51 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+
+  "title": "SalaryEvent",
+
+
+  "type": "object",
+
+  "additionalProperties": true,
+
+  "properties": {
+    "eventUID":      { "type": "string" },
+    "eventVersion": { "type": "integer" },
+    "eventName":    { "type": "string" },
+    "eventTime":    { "type": "string" },
+    "producer":      { "type": "string" },
+
+    "eventData": { "$ref": "#/definitions/SalaryEventData" }
+  },
+
+  "definitions": {
+    "SalaryEventData": {
+      "type": "object",
+      "properties": {
+        "yourSalary": {
+          "type": "integer"
+        },
+        "userPublicId": {
+          "type": "string"
+        },
+        "salaryDate": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "userPublicId",
+        "yourSalary",
+        "salaryDate"
+      ]
+    }
+  },
+
+  "required": [
+    "eventUID",
+    "eventVersion",
+    "eventName",
+    "eventTime",
+    "producer",
+    "eventData"
+  ]
+}

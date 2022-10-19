@@ -13,10 +13,11 @@ public class AccountApplication {
     {
         SpringApplication.run(AccountApplication.class, args);
         JobDetail job3 = JobBuilder.newJob(SendMessageTask.class)
-                .withIdentity("jobSalary", "groupSalary").build();
+                .withIdentity("jobSalary", "groupSalary")
+                .build();
         Trigger trigger3 = TriggerBuilder.newTrigger()
                 .withIdentity("cronTriggerSalary", "groupSalary")
-                .withSchedule(CronScheduleBuilder.dailyAtHourAndMinute(0, 0))
+                .withSchedule(CronScheduleBuilder.dailyAtHourAndMinute(0, 50))
                 .build();
         try {
             Scheduler scheduler3 = new StdSchedulerFactory().getScheduler();

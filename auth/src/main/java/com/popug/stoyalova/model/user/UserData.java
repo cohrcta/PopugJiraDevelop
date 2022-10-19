@@ -36,7 +36,6 @@ public class UserData {
 
     private String name;
 
-    @N
     @Column(unique = true)
     private String username;
 

@@ -1,26 +1,42 @@
 package com.popug.stoyalova.accounts.events;
 
-import lombok.Builder;
-import lombok.Getter;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.io.Serializable;
 import java.util.Date;
 
-@Getter
+@Data
 @SuperBuilder
+@AllArgsConstructor
+@NoArgsConstructor
+@JsonAutoDetect(
+        fieldVisibility = JsonAutoDetect.Visibility.ANY,
+        getterVisibility = JsonAutoDetect.Visibility.NONE,
+        setterVisibility = JsonAutoDetect.Visibility.NONE)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TaskCudEvent extends Event {
 
-    private final TaskCudData eventData;
+    private TaskCudData eventData;
 
     @Builder
-    @Getter
-    public static class TaskCudData {
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @JsonAutoDetect(
+            fieldVisibility = JsonAutoDetect.Visibility.ANY,
+            getterVisibility = JsonAutoDetect.Visibility.NONE,
+            setterVisibility = JsonAutoDetect.Visibility.NONE)
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class TaskCudData implements Serializable {
 
-        private final String userCreatePublicId;
-        private final String userAssignPublicId;
-        private final String taskPublicId;
-        private final String taskDescription;
-        private final String taskTitle;
-        private final Date taskCreteDate;
+        private String userCreatePublicId;
+        private String userAssignPublicId;
+        private String taskPublicId;
+        private String taskDescription;
+        private String taskTitle;
+        private Date taskCreteDate;
     }
 }

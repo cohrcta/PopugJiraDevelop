@@ -1,12 +1,12 @@
 package com.popug.stoyalova.service;
 
 import com.popug.stoyalova.SecurityUser;
+import com.popug.stoyalova.dto.UserDto;
 import com.popug.stoyalova.event.UserChangeRoleEvent;
 import com.popug.stoyalova.event.UserCudEvent;
 import com.popug.stoyalova.exception.ValidateException;
 import com.popug.stoyalova.model.user.Role;
 import com.popug.stoyalova.model.user.UserData;
-import com.popug.stoyalova.dto.UserDto;
 import com.popug.stoyalova.repository.UserRepository;
 import com.popug.stoyalova.support.BeanValidator;
 import lombok.RequiredArgsConstructor;
@@ -71,7 +71,7 @@ public class UserService implements UserDetailsService, IUserService {
                 .build();
         repository.save(user);
 
-        sendMessageTask.send(USER_CUD, createMessage("createUser")
+        sendMessageTask.sendStream(USER_CUD, createMessage("createUser")
                 .eventData(UserCudEvent.UserCudEventData.builder()
                         .userPublicId(user.getPublicId())
                         .email(user.getEmail())
@@ -107,7 +107,7 @@ public class UserService implements UserDetailsService, IUserService {
         user.setName(userDto.getName());
         user.setUsername(userDto.getUserName());
 
-        sendMessageTask.send(USER_CUD,  createMessage("updateUser")
+        sendMessageTask.sendStream(USER_CUD,  createMessage("updateUser")
                 .eventData(UserCudEvent.UserCudEventData.builder()
                         .userPublicId(user.getPublicId())
                         .email(user.getEmail())
@@ -118,7 +118,7 @@ public class UserService implements UserDetailsService, IUserService {
                 .build());
 
         if(newRole){
-            sendMessageTask.send("user.BE",  UserChangeRoleEvent.builder()
+            sendMessageTask.sendBus("user.BE",  UserChangeRoleEvent.builder()
                     .eventTime(new Date())
                     .eventName("userRoleChanged")
                     .eventVersion(1)

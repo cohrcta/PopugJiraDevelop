@@ -1,5 +1,8 @@
 package com.popug.stoyalova.accounts.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.popug.stoyalova.accounts.dto.AuditDto;
 import com.popug.stoyalova.accounts.dto.TaskDto;
 import com.popug.stoyalova.accounts.dto.UserDto;
@@ -10,17 +13,16 @@ import com.popug.stoyalova.accounts.model.Task;
 import com.popug.stoyalova.accounts.model.User;
 import com.popug.stoyalova.accounts.support.ObjectMapperUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -33,17 +35,21 @@ public class TaskConsumer {
     private final Random random = new Random();
 
     @KafkaListener(topics = {"task.streaming"})
-    public void consumeCud(final @Payload String message,
-                        final @Header(KafkaHeaders.OFFSET) Integer offset,
-                        final @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
-                        final @Header(KafkaHeaders.RECEIVED_TIMESTAMP) long ts,
-                        final Acknowledgment acknowledgment
-    ) {
-        log.info(String.format("#### -> Consumed CUD task message -> TIMESTAMP: %d %s offset: %d " +
-                " topic: %s", ts, message, offset,  topic));
-        acknowledgment.acknowledge();
-        TaskCudEvent cudEvent = ObjectMapperUtils.toBean(message, TaskCudEvent.class);
-
+    public void consumeCud( ConsumerRecord<String, List<TaskCudEvent>> cr,
+        @Payload List<TaskCudEvent> payload,
+        final @Header(KafkaHeaders.OFFSET) Integer offset,
+        final @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
+        final @Header(KafkaHeaders.RECEIVED_TIMESTAMP) long ts
+    ) throws JsonProcessingException {
+            log.info("#### -> Consumed Stream task message -> 1 [JSON] received key {}:" +
+                            " Topic [{}] | Payload: {} | Record: {} | TIMESTAMP: {}| {} offset",
+                    cr.key(), topic, payload, cr.toString(), ts, offset);
+        ObjectMapper objectMapper = ObjectMapperUtils.objectMapper();
+        JsonNode jsonNode = objectMapper.readTree(payload.toString());
+        log.info("JsonNode {}", jsonNode);
+        List<TaskCudEvent> taskCudEvents = objectMapper.convertValue(jsonNode,
+                objectMapper.getTypeFactory().constructCollectionType(ArrayList.class, TaskCudEvent.class));
+        TaskCudEvent cudEvent = taskCudEvents.get(0);
         if(cudEvent != null) {
             TaskDto taskDto = fillTaskDtoForCreate(cudEvent.getEventData());
             if ("createTask".equals(cudEvent.getEventName())) {
@@ -75,22 +81,28 @@ public class TaskConsumer {
                 .build();
     }
 
+    @SneakyThrows
     @KafkaListener(topics = {"task.BE"})
-    public void consumeBE(final @Payload String message,
+    public void consumeBE(ConsumerRecord<String, List<TaskChangeEvent>> cr,
+                          @Payload List<TaskChangeEvent> payload,
                         final @Header(KafkaHeaders.OFFSET) Integer offset,
                         final @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
-                        final @Header(KafkaHeaders.RECEIVED_TIMESTAMP) long ts,
-                        final Acknowledgment acknowledgment
+                        final @Header(KafkaHeaders.RECEIVED_TIMESTAMP) long ts
     ) {
-        log.info(String.format("#### -> Consumed BE task message -> TIMESTAMP: %d %s offset: %d " +
-                "topic: %s", ts, message, offset,  topic));
-        acknowledgment.acknowledge();
+        log.info("#### -> Consumed BE task message -> 1 [JSON] received key {}:" +
+                        " Topic [{}] | Payload: {} | Record: {} | TIMESTAMP: {}| {} offset",
+                cr.key(), topic, payload, cr.toString(), ts, offset);
 
-        TaskChangeEvent beEvent = ObjectMapperUtils.toBean(message, TaskChangeEvent.class);
+        ObjectMapper objectMapper = ObjectMapperUtils.objectMapper();
+        JsonNode jsonNode = objectMapper.readTree(payload.toString());
+        log.info("JsonNode {}", jsonNode);
+        List<TaskChangeEvent> beEvents = objectMapper.convertValue(jsonNode,
+                objectMapper.getTypeFactory().constructCollectionType(ArrayList.class, TaskChangeEvent.class));
+        TaskChangeEvent beEvent = beEvents.get(0);
         if(beEvent != null) {
             TaskChangeEvent.TaskChangeData taskChangeData = beEvent.getEventData();
             AuditDto.AuditDtoBuilder auditDtoBuilder = AuditDto.builder()
-                    .publicId(taskChangeData.getTaskPublicId())
+                    .taskPublicId(taskChangeData.getTaskPublicId())
                     .userAssign(taskChangeData.getUserPublicId())
                     .creationDate(taskChangeData.getTaskChangeDate())
                     .logDate(new Date());
@@ -108,9 +120,9 @@ public class TaskConsumer {
                         .salary(false)
                         .credit(task.getAmount())
                         .debit(0);
-                taskService.update(TaskDto.builder().status(Status.REASSIGN).build());
+                taskService.update(TaskDto.builder().publicId(taskChangeData.getTaskPublicId()).status(Status.REASSIGN).build());
 
-                userService.updateBalance(UserDto.builder().publicId(taskChangeData.getTaskPublicId())
+                userService.updateBalance(UserDto.builder().publicId(taskChangeData.getUserPublicId())
                 .money(task.getAmount()).build());
 
             } else if("closeTask".equals(beEvent.getEventName())){
@@ -122,10 +134,10 @@ public class TaskConsumer {
                         .debit(task.getFee())
                         .credit(0);
 
-                userService.updateBalance(UserDto.builder().publicId(taskChangeData.getTaskPublicId())
+                userService.updateBalance(UserDto.builder().publicId(taskChangeData.getUserPublicId())
                         .money(task.getFee()).build());
 
-                taskService.update(TaskDto.builder().status(Status.CLOSE)
+                taskService.update(TaskDto.builder().status(Status.CLOSE).publicId(taskChangeData.getTaskPublicId())
                         .changeDate(taskChangeData.getTaskChangeDate()).build());
 
             }

@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Getter
@@ -14,7 +15,7 @@ public class TaskCudEvent extends Event {
 
     @Builder
     @Getter
-    public static class TaskCudData {
+    public static class TaskCudData implements Serializable {
 
         private final String userCreatePublicId;
         private final String userAssignPublicId;

@@ -1,8 +1,8 @@
 package com.popug.stoyalova.controller;
 
+import com.popug.stoyalova.dto.UserDto;
 import com.popug.stoyalova.exception.ValidateException;
 import com.popug.stoyalova.model.user.UserData;
-import com.popug.stoyalova.dto.UserDto;
 import com.popug.stoyalova.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

@@ -14,17 +14,27 @@ spring:
     change-log: classpath:/changelog/changelog-master.yaml
 
   kafka:
+    listener:
+      ack-mode: manual_immediate
     consumer:
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: io.confluent.kafka.serializers.json.KafkaJsonSchemaDeserializer
       bootstrap-servers: localhost:29092
-      group-id: user
+      group-id: users
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: io.confluent.kafka.serializers.json.KafkaJsonSchemaSerializer
       bootstrap-servers:  localhost:29092
     bootstrap-servers:  localhost:29092
+    properties:
+      schema.registry.url: "http://localhost:8085"
+      auto.register.schemas: false
+      use.latest.version: false
+      json:
+        fail.invalid.schema: true
+        oneof.for.nullables: false
+        write.dates.iso8601: true
 
   security:
     oauth2:
