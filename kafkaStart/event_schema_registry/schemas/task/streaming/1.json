@@ -1,0 +1,55 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Task Cud Event",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "eventUID": {
+      "type": "string"
+    },
+    "eventVersion": {
+      "type": "integer"
+    },
+    "eventName": {
+      "type": "string"
+    },
+    "producer": {
+      "type": "string"
+    },
+    "eventTime": {
+      "type": "string"
+    },
+    "eventData": {
+      "$ref": "#/definitions/TaskCudData"
+    }
+  },
+  "required": [
+    "eventVersion"
+  ],
+  "definitions": {
+    "TaskCudData": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "userCreatePublicId": {
+          "type": "string"
+        },
+        "userAssignPublicId": {
+          "type": "string"
+        },
+        "taskPublicId": {
+          "type": "string"
+        },
+        "taskDescription": {
+          "type": "string"
+        },
+        "taskTitle": {
+          "type": "string"
+        },
+        "taskCreteDate": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
