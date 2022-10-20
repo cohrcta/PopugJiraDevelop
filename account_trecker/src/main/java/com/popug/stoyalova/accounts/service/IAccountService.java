@@ -5,7 +5,6 @@ import com.popug.stoyalova.accounts.dto.AccountReportFilter;
 import com.popug.stoyalova.accounts.dto.AuditDto;
 import com.popug.stoyalova.accounts.model.TaskAudit;
 
-import java.util.Date;
 import java.util.List;
 
 public interface IAccountService {

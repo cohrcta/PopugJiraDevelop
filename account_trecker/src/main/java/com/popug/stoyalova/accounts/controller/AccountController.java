@@ -3,28 +3,32 @@ package com.popug.stoyalova.accounts.controller;
 import com.popug.stoyalova.accounts.dto.AccountReportFilter;
 import com.popug.stoyalova.accounts.dto.AccountUserReport;
 import com.popug.stoyalova.accounts.model.TaskAudit;
+import com.popug.stoyalova.accounts.model.User;
 import com.popug.stoyalova.accounts.service.AccountService;
+import com.popug.stoyalova.accounts.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/accounts")
 @RequiredArgsConstructor
+@Slf4j
 public class AccountController {
 
     private final AccountService accountService;
+    private final UserService userService;
     private static final String DEFAULT_DATETIME_FORMAT = "dd-MM-yyyy";
 
     @PostMapping
@@ -33,12 +37,14 @@ public class AccountController {
         if (authentication != null) {
             String publicId = authentication.getName();
 
-            String role =authentication.getAuthorities().stream().filter(i -> i.getAuthority().startsWith("ROLE_"))
-                    .map(GrantedAuthority::getAuthority).collect(Collectors.joining());
-            if(role.contains("USER")) {
-                return formUserReport(accountService.findAllByUserPublicId(publicId, filter));
-            }else if (!role.isEmpty()){
-                return formAdminReport(accountService.findAllByDate(filter));
+            Optional<User> userO = userService.findByPublicId(publicId);
+            if(userO.isPresent()) {
+                String role =userO.get().getRole();
+                if (role.contains("USER")) {
+                    return formUserReport(accountService.findAllByUserPublicId(publicId, filter));
+                } else if (!role.isEmpty()) {
+                    return formAdminReport(accountService.findAllByDate(filter));
+                }
             }
         }
         return Map.of();

@@ -28,8 +28,8 @@ public class AccountService implements IAccountService {
 
     @Override
     public void save(AuditDto auditDto) {
-        Optional<User> userO = userService.findByPublicId(auditDto.getTaskPublicId());
-        Optional<Task> taskO = taskService.findByPublicId(auditDto.getUserAssign());
+        Optional<User> userO = userService.findByPublicId(auditDto.getUserAssign());
+        Optional<Task> taskO = taskService.findByPublicId(auditDto.getTaskPublicId());
         repository.save(TaskAudit.builder()
                 .publicId(UUID.randomUUID().toString())
                 .task(taskO.get())
@@ -38,7 +38,7 @@ public class AccountService implements IAccountService {
                 .dateCreateInParentSystem(auditDto.getCreationDate())
                 .dateLogIntoAccount(auditDto.getLogDate())
                 .debit(auditDto.getDebit())
-                .forADay(auditDto.isSalary())
+                .forADay(auditDto.isSalary() ? 1 : 0)
                 .user(userO.get()).build());
 
     }
@@ -53,14 +53,14 @@ public class AccountService implements IAccountService {
         if ("USER".equals(user.getRole())) {
             Date date = new Date();
             if(ReportSearchLastPeriod.LAST_WEEK.equals(filter.getLastPeriod())) {
-                return repository.findAllByUserAndDateCreateInParentSystemIsBetweenAndForADay(user, atStartOfWeek(date),
-                        atEndOfDay(date), false);
+                return repository.findAllByUserAndDateCreateInParentSystemIsBetweenAndForADayIs(user, atStartOfWeek(date),
+                        atEndOfDay(date), 0);
             }else if(ReportSearchLastPeriod.LAST_MONTH.equals(filter.getLastPeriod())) {
-                return repository.findAllByUserAndDateCreateInParentSystemIsBetweenAndForADay(user, atStartOfMonth(date),
-                        atEndOfDay(date), false);
+                return repository.findAllByUserAndDateCreateInParentSystemIsBetweenAndForADayIs(user, atStartOfMonth(date),
+                        atEndOfDay(date), 0);
             }
-            return repository.findAllByUserAndDateCreateInParentSystemIsBetweenAndForADay(user,
-                    atStartOfDay(date), atEndOfDay(date), false);
+            return repository.findAllByUserAndDateCreateInParentSystemIsBetweenAndForADayIs(user,
+                    atStartOfDay(date), atEndOfDay(date), 0);
         }
         return List.of();
     }
@@ -69,13 +69,13 @@ public class AccountService implements IAccountService {
     public List<TaskAudit> findAllByDate(AccountReportFilter filter) {
         Date date = new Date();
         if(ReportSearchLastPeriod.LAST_WEEK.equals(filter.getLastPeriod())) {
-            return repository.findAllByDateCreateInParentSystemIsBetweenAndForADay(atStartOfWeek(date),
-                    atEndOfDay(date), false);
+            return repository.findAllByDateCreateInParentSystemIsBetweenAndForADayIs(atStartOfWeek(date),
+                    atEndOfDay(date), 0);
         }else if(ReportSearchLastPeriod.LAST_MONTH.equals(filter.getLastPeriod())) {
-            return repository.findAllByDateCreateInParentSystemIsBetweenAndForADay(atStartOfMonth(date),
-                    atEndOfDay(date), false);
+            return repository.findAllByDateCreateInParentSystemIsBetweenAndForADayIs(atStartOfMonth(date),
+                    atEndOfDay(date), 0);
         }
-        return repository.findAllByDateCreateInParentSystemIsBetweenAndForADay(atStartOfDay(date), atEndOfDay(date), false);
+        return repository.findAllByDateCreateInParentSystemIsBetweenAndForADayIs(atStartOfDay(date), atEndOfDay(date), 0);
     }
 
     private static Date atStartOfDay(Date date) {

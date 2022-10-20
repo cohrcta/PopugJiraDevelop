@@ -50,7 +50,7 @@ public class TaskAudit {
     private String description;
 
     @Column(name = "salary")
-    private boolean forADay;
+    private int forADay;
 
     @Column(name = "date_log")
     private Date dateLogIntoAccount;

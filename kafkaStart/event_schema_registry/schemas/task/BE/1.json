@@ -1,0 +1,51 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Task Change Event",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "eventUID": {
+      "type": "string"
+    },
+    "eventVersion": {
+      "type": "integer"
+    },
+    "eventName": {
+      "type": "string"
+    },
+    "producer": {
+      "type": "string"
+    },
+    "eventTime": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "eventData": {
+      "$ref": "#/definitions/TaskChangeData"
+    }
+  },
+  "required": [
+    "eventVersion"
+  ],
+  "definitions": {
+    "TaskChangeData": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "type": "string"
+        },
+        "taskPublicId": {
+          "type": "string"
+        },
+        "userPublicId": {
+          "type": "string"
+        },
+        "taskChangeDate": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    }
+  }
+}

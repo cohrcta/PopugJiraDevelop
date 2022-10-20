@@ -1,5 +1,7 @@
 package com.popug.stoyalova.service;
 
+import com.popug.stoyalova.event.UserChangeRoleEvent;
+import com.popug.stoyalova.event.UserCudEvent;
 import com.popug.stoyalova.event.UserEvent;
 import com.popug.stoyalova.support.ObjectMapperUtils;
 import lombok.RequiredArgsConstructor;
@@ -11,11 +13,20 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class SendMessageTask {
 
-    private final UserProducer producer;
+    private final UserStreamingProducer producerStream;
+    private final UserBusinessProducer producerBus;
 
-    public void send(String topic, UserEvent event) {
+    public void sendStream(String topic, UserCudEvent event) {
 
-        producer.sendMessage(topic, ObjectMapperUtils.toJson(event));
+        producerStream.sendMessage(topic, event);
+
+        log.info(String.format("Produced: topic: %s value size: %s", topic,
+                ObjectMapperUtils.toJson(event)));
+    }
+
+    public void sendBus(String topic, UserChangeRoleEvent event) {
+
+        producerBus.sendMessage(topic, event);
 
         log.info(String.format("Produced: topic: %s value size: %s", topic,
                 ObjectMapperUtils.toJson(event)));

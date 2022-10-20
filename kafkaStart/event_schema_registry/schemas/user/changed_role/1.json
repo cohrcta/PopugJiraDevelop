@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+
+  "title": "UserChangeRoleEvent",
+
+  "type": "object",
+
+  "properties": {
+    "eventUID":      { "type": "string" },
+    "eventVersion": { "type": "integer" },
+    "eventName":    { "type": "string" },
+    "eventTime":    { "type": "string" },
+    "producer":      { "type": "string" },
+
+    "eventData": { "$ref": "#/definitions/UserChangeRoleData" }
+  },
+
+  "definitions": {
+    "UserChangeRoleData": {
+      "type": "object",
+      "properties": {
+        "userPublicId": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "userPublicId",
+        "role"
+      ]
+    }
+  },
+
+  "required": [
+    "eventUID",
+    "eventVersion",
+    "eventName",
+    "eventTime",
+    "producer",
+    "eventData"
+  ]
+}

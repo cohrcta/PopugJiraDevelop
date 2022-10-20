@@ -28,7 +28,7 @@ public class TaskService implements ITaskService{
         List<Task> tasks = repository.findAllByCloseDateIsNull();
         List<User> developers = userService.findAllByRole("USER");
         tasks.forEach(task ->{ assignForRandom(developers, task);
-            sendMessageTask.send(TASK_BE, createBuilder("updateTask")
+            sendMessageTask.sendBus(TASK_BE, createBuilder("updateTask")
                     .eventData(TaskChangeEvent.TaskChangeData.builder()
                             .taskPublicId(task.getPublicId())
                             .userPublicId(task.getUserAssign().getPublicId())
@@ -49,7 +49,7 @@ public class TaskService implements ITaskService{
         return TaskCudEvent.builder()
                 .eventTime(new Date())
                 .eventName("createTask")
-                .eventVersion(1)
+                .eventVersion(2)
                 .producer("taskService")
                 .eventUID(UUID.randomUUID().toString());
     }
@@ -74,26 +74,24 @@ public class TaskService implements ITaskService{
                 .status(Status.OPEN)
                 .title(taskDto.getTitle())
                 .userCreate(userOptional.get());
+
+        assignOnCreateRandom(developers, taskBuilder);
         Task task = taskBuilder.build();
         repository.save(task);
-
-        sendMessageTask.send(TASK_CUD, createMessage()
+        sendMessageTask.sendStream(TASK_CUD, createMessage()
                 .eventData(TaskCudEvent.TaskCudData.builder()
                         .taskCreteDate(task.getCreateDate())
+                        .userAssignPublicId(task.getUserAssign().getPublicId())
                         .taskPublicId(task.getPublicId())
                         .taskDescription(task.getDescription())
                         .taskTitle(task.getTitle())
                         .userCreatePublicId(task.getUserCreate().getPublicId())
                         .build())
                 .build());
-
-        assignOnCreateRandom(developers, taskBuilder);
-        task = taskBuilder.build();
-        repository.save(task);
-        sendMessageTask.send(TASK_BE, createBuilder("updateTask")
+        sendMessageTask.sendBus(TASK_BE, createBuilder("updateTask")
                         .eventData(TaskChangeEvent.TaskChangeData.builder()
                                 .taskPublicId(task.getPublicId())
-                                .userPublicId(taskDto.getUserAssign())
+                                .userPublicId(task.getUserAssign().getPublicId())
                                 .status(task.getStatus().name())
                                 .taskChangeDate(task.getCreateDate())
                                 .build())
@@ -114,7 +112,7 @@ public class TaskService implements ITaskService{
         task.setStatus(Status.CLOSE);
         repository.save(task);
 
-        sendMessageTask.send(TASK_BE, createBuilder("closeTask")
+        sendMessageTask.sendBus(TASK_BE, createBuilder("closeTask")
                 .eventData(TaskChangeEvent.TaskChangeData.builder()
                         .taskPublicId(task.getPublicId())
                         .userPublicId(taskDto.getUserAssign())

@@ -33,6 +33,9 @@ public class Task {
     private String description;
     private String title;
 
+    @Column(name = "jira_id")
+    private String jiraId;
+
     @ManyToOne
     @JoinColumn(
             name = "user_create_id",

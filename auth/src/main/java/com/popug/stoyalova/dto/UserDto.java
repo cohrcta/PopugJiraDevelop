@@ -1,9 +1,9 @@
 package com.popug.stoyalova.dto;
 
-import javax.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 
 @Data

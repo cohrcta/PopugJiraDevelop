@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+
+  "title": "UserCudEvent",
+
+  "type": "object",
+
+  "additionalProperties": true,
+
+  "properties": {
+    "eventUID":      { "type": "string" },
+    "eventVersion": { "type": "integer" },
+    "eventName":    { "type": "string" },
+    "eventTime":    { "type": "string" },
+    "producer":      { "type": "string" },
+
+    "eventData": { "$ref": "#/definitions/UserCudEventData" }
+  },
+
+  "definitions": {
+    "UserCudEventData": {
+      "type": "object",
+
+      "properties": {
+        "userPublicId": {
+          "type": "string"
+        },
+        "userName": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "name": {
+          "type": ["string", "null"]
+        }
+      },
+      "required": [
+        "userPublicId",
+        "userName",
+        "email"
+      ]
+    }
+  },
+
+  "required": [
+    "eventUID",
+    "eventVersion",
+    "eventName",
+    "eventTime",
+    "producer",
+    "eventData"
+  ]
+}

@@ -1,9 +1,11 @@
 package com.popug.stoyalova.accounts.events;
 
+import com.popug.stoyalova.accounts.support.JsonParseLocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Getter
@@ -14,7 +16,7 @@ public class SalaryEvent extends Event {
 
     @Builder
     @Getter
-    public static class SalaryEventData {
+    public static class SalaryEventData implements Serializable {
 
         private final long yourSalary;
         private final String userPublicId;

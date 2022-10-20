@@ -25,12 +25,10 @@ public class UserConsumer {
                         final @Header(KafkaHeaders.OFFSET) Integer offset,
                         final @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String key,
                         final @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
-                        final @Header(KafkaHeaders.RECEIVED_TIMESTAMP) long ts,
-                        final Acknowledgment acknowledgment
+                        final @Header(KafkaHeaders.RECEIVED_TIMESTAMP) long ts
     ) {
         log.info(String.format("#### -> Consumed CUD message -> TIMESTAMP: %d %s offset: %d key: %s " +
                 " topic: %s", ts, message, offset, key,  topic));
-        acknowledgment.acknowledge();
         UserCudEvent cudEvent = ObjectMapperUtils.toBean(message, UserCudEvent.class);
         if(cudEvent != null) {
             UserDto userDto = UserDto.builder()

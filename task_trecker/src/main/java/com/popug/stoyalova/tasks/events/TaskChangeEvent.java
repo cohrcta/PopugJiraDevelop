@@ -1,25 +1,44 @@
 package com.popug.stoyalova.tasks.events;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.io.Serializable;
 import java.util.Date;
 
-@Getter
+@Data
 @SuperBuilder
+@AllArgsConstructor
+@NoArgsConstructor
+@JsonAutoDetect(
+        fieldVisibility = JsonAutoDetect.Visibility.ANY,
+        getterVisibility = JsonAutoDetect.Visibility.NONE,
+        setterVisibility = JsonAutoDetect.Visibility.NONE)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TaskChangeEvent extends Event {
 
-    private final TaskChangeData eventData;
+    private TaskChangeData eventData;
 
     @Builder
-    @Getter
-    public static class TaskChangeData {
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @JsonAutoDetect(
+            fieldVisibility = JsonAutoDetect.Visibility.ANY,
+            getterVisibility = JsonAutoDetect.Visibility.NONE,
+            setterVisibility = JsonAutoDetect.Visibility.NONE)
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class TaskChangeData implements Serializable {
 
-        private final String status;
-        private final String taskPublicId;
-        private final String userPublicId;
-        private final Date taskChangeDate;
+        private String status;
+        private String taskPublicId;
+        private String userPublicId;
+        private Date taskChangeDate;
     }
 
 }

@@ -1,8 +1,8 @@
 package com.popug.stoyalova.service;
 
+import com.popug.stoyalova.dto.UserDto;
 import com.popug.stoyalova.exception.ValidateException;
 import com.popug.stoyalova.model.user.UserData;
-import com.popug.stoyalova.dto.UserDto;
 
 import java.util.List;
 import java.util.Optional;

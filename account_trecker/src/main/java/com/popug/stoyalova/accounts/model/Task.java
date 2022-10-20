@@ -54,4 +54,6 @@ public class Task {
     @Column(name = "user_create")
     private String userCreatePublicId;
 
+    @Column(name = "jira_id")
+    private String jiraId;
 }

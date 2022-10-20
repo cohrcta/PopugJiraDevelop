@@ -15,5 +15,6 @@ public class TaskDto {
     private String publicId;
     private String description;
     private String title;
+    private String jiraId;
     private Date creationDate;
 }

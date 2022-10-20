@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+    <changeSet id="20221029_1405" author="popugAdmin">
+        <modifyDataType  columnName="description"
+                         newDataType="varchar2(255)"
+                         tableName="task_audit_data"/>
+    </changeSet>
+
+    <changeSet id="20221029_1505" author="popugAdmin">
+        <createSequence sequenceName="error_message_id_seq" startValue="1" incrementBy="1" />
+
+        <createTable tableName="error_message">
+            <column name="id"  type="NUMBER" defaultValueSequenceNext="error_message_id_seq">
+                <constraints primaryKey="true"  nullable="false"/>
+            </column>
+
+            <column name="description" type="varchar2(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="topic" type="varchar2(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="eventName" type="varchar2(255)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="public_id" type="varchar(64)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+
+            <column name="message" type="clob"/>
+
+            <column name="add_time"  type="timestamp"/>
+
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

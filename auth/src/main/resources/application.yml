@@ -19,6 +19,17 @@ spring:
   kafka:
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: io.confluent.kafka.serializers.json.KafkaJsonSchemaSerializer
       bootstrap-servers:  localhost:29092
+      properties:
+        schema.registry.url: "http://localhost:8085"
+        auto.register.schemas: false
+        use.latest.version: false
+        json:
+          fail.invalid.schema: true
+          oneof.for.nullables: false
+          write.dates.iso8601: true
     bootstrap-servers:  localhost:29092
+    properties:
+      confluent:
+        value.subject.name.strategy: io.confluent.kafka.serializers.subject.RecordNameStrategy
