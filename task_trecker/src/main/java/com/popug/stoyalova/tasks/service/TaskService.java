@@ -49,7 +49,7 @@ public class TaskService implements ITaskService{
         return TaskCudEvent.builder()
                 .eventTime(new Date())
                 .eventName("createTask")
-                .eventVersion(1)
+                .eventVersion(2)
                 .producer("taskService")
                 .eventUID(UUID.randomUUID().toString());
     }

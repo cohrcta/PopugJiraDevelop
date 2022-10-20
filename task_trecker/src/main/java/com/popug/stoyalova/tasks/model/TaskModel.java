@@ -10,4 +10,5 @@ import lombok.NoArgsConstructor;
 public class TaskModel {
     private String description;
     private String title;
+    private String jiraId;
 }

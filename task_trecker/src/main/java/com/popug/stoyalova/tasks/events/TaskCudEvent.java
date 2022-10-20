@@ -22,6 +22,7 @@ public class TaskCudEvent extends Event {
         private final String taskPublicId;
         private final String taskDescription;
         private final String taskTitle;
+        private final String jiraId;
         private final Date taskCreteDate;
     }
 }

@@ -1,7 +1,6 @@
 package com.popug.stoyalova.accounts.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.popug.stoyalova.accounts.dto.AuditDto;
@@ -15,7 +14,6 @@ import com.popug.stoyalova.accounts.model.Task;
 import com.popug.stoyalova.accounts.model.User;
 import com.popug.stoyalova.accounts.support.ObjectMapperUtils;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -98,6 +96,7 @@ public class TaskConsumer {
                 .description(taskCudData.getTaskDescription())
                 .status(Status.OPEN)
                 .title(taskCudData.getTaskTitle())
+                .jiraId(taskCudData.getJiraId())
                 .userCreated(taskCudData.getUserCreatePublicId())
                 .amount(amount)
                 .fee(fee)
