@@ -6,6 +6,8 @@ import com.popug.stoyalova.accounts.repository.ErrorMessageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+
 @Service
 @RequiredArgsConstructor
 public class ErrorMessageService implements IErrorMessageService{
@@ -20,6 +22,7 @@ public class ErrorMessageService implements IErrorMessageService{
                 .message(dto.getMessage())
                 .publicId(dto.getPublicId())
                 .topic(dto.getTopic())
+                .addTime(new Date())
                 .build());
     }
 }

@@ -1,4 +1,4 @@
-package com.popug.stoyalova.accounts.model;
+package com.popug.stoyalova.tasks.model;
 
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
@@ -38,6 +38,9 @@ public class ErrorMessage {
 
     @Lob
     private String message;
+
+    @Column(name = "send_time")
+    private Date sendTime;
 
     @Column(name = "add_time")
     private Date addTime;
