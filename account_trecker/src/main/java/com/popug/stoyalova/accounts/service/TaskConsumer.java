@@ -52,7 +52,7 @@ public class TaskConsumer {
             List<TaskCudEvent> taskCudEvents = objectMapper.convertValue(jsonNode,
                     objectMapper.getTypeFactory().constructCollectionType(ArrayList.class, TaskCudEvent.class));
             TaskCudEvent cudEvent = taskCudEvents.get(0);
-            if (cudEvent != null && cudEvent.getEventVersion() == 1) {
+            if (cudEvent != null && cudEvent.getEventVersion() == 2) {
                 TaskDto taskDto = fillTaskDtoForCreate(cudEvent.getEventData());
                 if ("createTask".equals(cudEvent.getEventName())) {
                     Optional<Task> taskO = taskService.findByPublicId(cudEvent.getEventData().getTaskPublicId());
@@ -120,7 +120,7 @@ public class TaskConsumer {
             List<TaskChangeEvent> beEvents = objectMapper.convertValue(jsonNode,
                     objectMapper.getTypeFactory().constructCollectionType(ArrayList.class, TaskChangeEvent.class));
             TaskChangeEvent beEvent = beEvents.get(0);
-            if(beEvent != null && beEvent.getEventVersion() ==1) {
+            if(beEvent != null && beEvent.getEventVersion() ==2) {
                 TaskChangeEvent.TaskChangeData taskChangeData = beEvent.getEventData();
                 AuditDto.AuditDtoBuilder auditDtoBuilder = AuditDto.builder()
                         .taskPublicId(taskChangeData.getTaskPublicId())
