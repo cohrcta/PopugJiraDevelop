@@ -3,5 +3,3 @@ databaseChangeLog :
       file : changelog/initialization/schema.xml
   - include:
       file: changelog/initialization/users.xml
-  - includeAll:
-      path: db/changelog/migrations/

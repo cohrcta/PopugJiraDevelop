@@ -44,15 +44,11 @@ public class TaskController {
     @PostMapping("/create")
     public Map<String, Object> save(@RequestBody TaskModel taskModel) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(taskModel.getTitle().contains("[") || taskModel.getTitle().contains("]") ){
-            return Map.of("id", "DON`T PUT JIRA_ID INTO TITLE !!");
-        }
         if (authentication != null) {
             String publicId = authentication.getName();
             TaskDto taskDto = TaskDto.builder()
                     .userCreated(publicId)
                     .title(taskModel.getTitle())
-                    .jiraId(taskModel.getJiraId())
                     .description(taskModel.getDescription())
                     .build();
             String savedId = taskService.save(taskDto);

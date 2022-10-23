@@ -85,7 +85,6 @@ public class TaskService implements ITaskService{
                         .taskPublicId(task.getPublicId())
                         .taskDescription(task.getDescription())
                         .taskTitle(task.getTitle())
-                        .jiraId(task.getJiraId())
                         .userCreatePublicId(task.getUserCreate().getPublicId())
                         .build())
                 .build());

@@ -1,6 +1,5 @@
 package com.popug.stoyalova.tasks.service;
 
-import com.popug.stoyalova.tasks.dto.ErrorMessageDto;
 import com.popug.stoyalova.tasks.events.TaskCudEvent;
 import com.popug.stoyalova.tasks.support.ObjectMapperUtils;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +17,6 @@ import org.springframework.util.concurrent.ListenableFutureCallback;
 @Slf4j
 public class TaskStreamingProducer {
 
-    private final ErrorMessageService errorMessageService;
     private final KafkaTemplate<String, TaskCudEvent> kafkaTemplate;
 
     @SneakyThrows
@@ -49,18 +47,11 @@ public class TaskStreamingProducer {
     private void handleSuccess(String key, TaskCudEvent value, SendResult<String, TaskCudEvent> result) {
 
         log.info("The record for topic : {}, value : {} is produced successfully to offset {}", key, value, result.getRecordMetadata().offset());
-        errorMessageService.markAsSend(value.getEventUID());
     }
 
     private void handleFailure(String key, TaskCudEvent value, Throwable ex) {
 
         log.info("The record for topic: {}, value: {} cannot be processed! caused by {}", key, value, ex.getMessage());
-        errorMessageService.save(ErrorMessageDto.builder()
-                .topic(key)
-                .publicId(value.getEventUID())
-                .message(ObjectMapperUtils.toJson(value))
-                .eventName(value.getEventName())
-                .description("Error send "+ value.getEventName())
-                .build());
+
     }
 }

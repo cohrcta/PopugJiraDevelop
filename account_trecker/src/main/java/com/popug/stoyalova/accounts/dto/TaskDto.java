@@ -18,6 +18,5 @@ public class TaskDto {
     private Date creationDate;
     private Date changeDate;
     private int amount;
-    private String jiraId;
     private int fee;
 }

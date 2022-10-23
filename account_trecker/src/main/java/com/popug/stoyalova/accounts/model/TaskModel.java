@@ -9,6 +9,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class TaskModel {
     private String description;
-    private String jiraId;
     private String title;
 }

@@ -23,7 +23,6 @@ public class TaskService implements ITaskService{
                 .status(taskDto.getStatus())
                 .amount(taskDto.getAmount())
                 .fee(taskDto.getFee())
-                .jiraId(taskDto.getJiraId())
                 .userCreatePublicId(taskDto.getUserCreated());
         Task task = taskBuilder.build();
         repository.save(task);
